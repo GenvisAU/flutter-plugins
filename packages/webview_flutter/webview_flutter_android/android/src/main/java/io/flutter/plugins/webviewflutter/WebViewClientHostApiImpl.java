@@ -13,7 +13,6 @@ import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.webkit.GeolocationPermissions;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -29,8 +28,6 @@ public class WebViewClientHostApiImpl implements GeneratedAndroidWebView.WebView
   private final InstanceManager instanceManager;
   private final WebViewClientCreator webViewClientCreator;
   private final WebViewClientFlutterApiImpl flutterApi;
-  private String geolocationOrigin;
-  private GeolocationPermissions.Callback geolocationCallback;
 
   /**
    * An interface implemented by a class that extends {@link WebViewClient} and {@link Releasable}.
@@ -176,52 +173,6 @@ public class WebViewClientHostApiImpl implements GeneratedAndroidWebView.WebView
         flutterApi.requestLoading(this, view, request, reply -> {});
       }
       return shouldOverrideUrlLoading;
-    }
-
-    @Override
-    public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
-      // Geolocation permissions coming from this app's Manifest will only be valid for devices with
-      // API_VERSION < 23. On API 23 and above, we must check for permissions, and possibly
-      // ask for them.
-      String perm = Manifest.permission.ACCESS_FINE_LOCATION;
-      if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
-              ContextCompat.checkSelfPermission(MainActivity.this, perm) == PackageManager.PERMISSION_GRANTED) {
-          // we're on SDK < 23 OR user has already granted permission
-          callback.invoke(origin, true, false);
-      } else {
-          if (!ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, perm)) {
-              // ask the user for permission
-              ActivityCompat.requestPermissions(MainActivity.this, new String[] {perm}, REQUEST_FINE_LOCATION);
-
-              // we will use these when user responds
-              geolocationOrigin = origin;
-              geolocationCallback = callback;
-          }
-      }
-    }
-
-    // @Override
-    // public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
-    //   callback.invoke(origin, true, false);
-    //   super.onGeolocationPermissionsShowPrompt(origin, callback);
-    // }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-      super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-      switch (requestCode) {
-      case REQUEST_FINE_LOCATION:
-          boolean allow = false;
-          if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-              // user has allowed this permission
-              allow = true;
-          }
-          if (geolocationCallback != null) {
-              // call back to web chrome client
-              geolocationCallback.invoke(geolocationOrigin, allow, false);
-          }
-          break;
-      }
     }
 
     @Override

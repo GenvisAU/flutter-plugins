@@ -10,11 +10,16 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.webkit.GeolocationPermissions;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.VisibleForTesting;
 import io.flutter.plugins.webviewflutter.GeneratedAndroidWebView.WebChromeClientHostApi;
+import android.Manifest;
+import androidx.core.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
+import android.content.pm.PackageManager;
 
 /**
  * Host api implementation for {@link WebChromeClient}.
@@ -25,6 +30,7 @@ public class WebChromeClientHostApiImpl implements WebChromeClientHostApi {
   private final InstanceManager instanceManager;
   private final WebChromeClientCreator webChromeClientCreator;
   private final WebChromeClientFlutterApiImpl flutterApi;
+  private static final int REQUEST_LOCATION = 100;
 
   /**
    * Implementation of {@link WebChromeClient} that passes arguments of callback methods to Dart.
@@ -98,6 +104,17 @@ public class WebChromeClientHostApiImpl implements WebChromeClientHostApi {
       resultMsg.sendToTarget();
 
       return true;
+    }
+
+    @Override
+    public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+      if (ContextCompat.checkSelfPermission(WebViewFlutterPlugin.activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+          callback.invoke(origin, true, false);
+      } else {
+          if (!ActivityCompat.shouldShowRequestPermissionRationale(WebViewFlutterPlugin.activity, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+              ActivityCompat.requestPermissions(WebViewFlutterPlugin.activity, new String[] {Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+          }
+      }
     }
 
     @Override
