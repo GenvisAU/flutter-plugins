@@ -453,6 +453,13 @@ class WebSettings {
     return api.setSupportMultipleWindowsFromInstance(this, support);
   }
 
+  /// Sets whether the WebView should support geolocation
+  ///
+  /// The default is false.
+  Future<void> setGeolocation(bool support) {
+    return api.setGeolocationEnabledFromInstance(this, support);
+  }
+
   /// Tells the WebView to enable JavaScript execution.
   ///
   /// The default is false.

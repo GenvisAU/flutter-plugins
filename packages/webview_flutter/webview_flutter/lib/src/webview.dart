@@ -96,6 +96,7 @@ class WebView extends StatefulWidget {
         AutoMediaPlaybackPolicy.require_user_action_for_all_media_types,
     this.allowsInlineMediaPlayback = false,
     this.backgroundColor,
+    this.geolocationEnabled = false,
   })  : assert(javascriptMode != null),
         assert(initialMediaPlaybackPolicy != null),
         assert(allowsInlineMediaPlayback != null),
@@ -297,6 +298,12 @@ class WebView extends StatefulWidget {
   /// default [backgroundColor] is `null`.
   final Color? backgroundColor;
 
+  ///
+  /// This only works on Android.
+  ///
+  /// By default `geolocationEnabled` is false.
+  final bool geolocationEnabled;
+
   @override
   State<StatefulWidget> createState() => _WebViewState();
 }
@@ -383,6 +390,7 @@ WebSettings _webSettingsFromWidget(WebView widget) {
     allowsInlineMediaPlayback: widget.allowsInlineMediaPlayback,
     userAgent: WebSetting<String?>.of(widget.userAgent),
     zoomEnabled: widget.zoomEnabled,
+    geolocationEnabled: widget.geolocationEnabled,
   );
 }
 
