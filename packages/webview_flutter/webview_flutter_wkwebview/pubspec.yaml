@@ -22,7 +22,7 @@ dependencies:
   webview_flutter_platform_interface:
     git:
       url: https://github.com/b1lalf/flutter-plugins.git
-      ref: 9950deb99ba515986f23b8bb0078893b5772927f
+      ref: c88069070d95bccb7045a65cc2cfd57b65f6e846
       path: packages/webview_flutter/webview_flutter_platform_interface
 
 dev_dependencies:
