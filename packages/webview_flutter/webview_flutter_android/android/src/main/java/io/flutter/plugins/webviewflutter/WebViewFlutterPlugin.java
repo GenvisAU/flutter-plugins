@@ -4,6 +4,7 @@
 
 package io.flutter.plugins.webviewflutter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.view.View;
@@ -34,6 +35,7 @@ public class WebViewFlutterPlugin implements FlutterPlugin, ActivityAware {
   private FlutterPluginBinding pluginBinding;
   private WebViewHostApiImpl webViewHostApi;
   private JavaScriptChannelHostApiImpl javaScriptChannelHostApi;
+  public static Activity activity;
 
   /**
    * Add an instance of this to {@link io.flutter.embedding.engine.plugins.PluginRegistry} to
@@ -139,6 +141,7 @@ public class WebViewFlutterPlugin implements FlutterPlugin, ActivityAware {
 
   @Override
   public void onAttachedToActivity(@NonNull ActivityPluginBinding activityPluginBinding) {
+    activity = activityPluginBinding.getActivity();
     updateContext(activityPluginBinding.getActivity());
   }
 
