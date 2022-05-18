@@ -135,11 +135,5 @@ public class WebSettingsHostApiImpl implements WebSettingsHostApi {
   public void setGeolocationEnabled(Long instanceId, Boolean enabled) {
     final WebSettings webSettings = (WebSettings) instanceManager.getInstance(instanceId);
     webSettings.setGeolocationEnabled(enabled);
-    if (enabled && Build.VERSION.SDK_INT >= 23) {
-      int checkPermission = ContextCompat.checkSelfPermission(WebViewFlutterPlugin.activity, Manifest.permission.ACCESS_COARSE_LOCATION);
-      if (checkPermission != PackageManager.PERMISSION_GRANTED) {
-        ActivityCompat.requestPermissions(WebViewFlutterPlugin.activity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION},REQUEST_LOCATION);
-      }
-    }
   }
 }
